@@ -138,7 +138,7 @@ A interface do projeto foi construída utilizando componentes do **PrimeVue** co
   "
 />
 ```
-### Controle de Quantidade (InputNumber)
+### Confirmação de Remoção (ConfirmDialog)
 
 ```ts
 this.$confirm.require({
@@ -155,7 +155,7 @@ this.$confirm.require({
 <ConfirmDialog />
 ```
 
-### Confirmação de Remoção (ConfirmDialog)
+### Dark Mode com Tailwind
 
 ```ts
 toggleDarkMode(): void {
@@ -246,6 +246,14 @@ A utilização de PrimeVue junto ao Tailwind CSS permitiu criar uma interface ma
 
 A aplicação evoluiu para uma interface moderna, interativa e responsiva,
 aproximando-se de um e-commerce real.
+
+## Deploy
+
+O projeto está publicado e pode ser acessado diretamente pelo navegador:
+
+**Acesse a aplicação:** https://evoluindo-ui-primevue-tailwind.vercel.app/
+
+> Não é necessário instalação — basta abrir o link.
 
 ## Contribuição
 
