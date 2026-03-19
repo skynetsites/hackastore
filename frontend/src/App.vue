@@ -30,7 +30,7 @@ export default defineComponent({
     const cart = new Cart();
     const cartItems: CartItem[] = [];
     const darkMode = false;
-    const qtyBtnCls = '!bg-transparent !w-5 [&_svg]:!w-5 [&_svg]:!h-3.5 focus:!outline-none focus:!shadow-none';
+    const qtyBtnCls = 'bg-transparent! w-5! [&_svg]:w-5! [&_svg]:h-3.5! [&_.pi]:hover:text-gray-800 dark:[&_.pi]:hover:text-gray-100 pt-[0.24rem]! [&_.pi]:text-[0.6rem]! [&_.pi]:font-bold! focus:outline-none! focus:shadow-none!';
 
     return {
       products,
@@ -268,6 +268,8 @@ export default defineComponent({
                         buttonsClass="bg-transparent! w-5!"
                         :incrementButtonClass="qtyBtnCls"
                         :decrementButtonClass="qtyBtnCls"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
                         :inputClass="`
                           ${item.quantity >= 100 
                             ? 'w-14!' 
