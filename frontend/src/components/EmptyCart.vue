@@ -1,4 +1,9 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "EmptyCart",
+});
 </script>
 
 <template>
@@ -19,7 +24,13 @@
     <template #content>
       <i class="pi pi-shopping-cart text-xl! mb-1 block" />
       <h2 class="m-0 text-base font-semibold">Seu carrinho está vazio.</h2>
-      <p class="m-0 mt-1 text-sm">Adicione produtos pela vitrine acima.</p>
+      <p class="m-0 mt-1 text-sm">Adicione produtos pela vitrine ou pela listagem.</p>
+      <RouterLink
+        to="/products"
+        class="inline-block mt-3 text-sm text-blue-700 dark:text-blue-300 font-medium no-underline hover:underline"
+      >
+        Ver produtos
+      </RouterLink>
     </template>
   </Card>
 </template>

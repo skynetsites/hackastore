@@ -39,7 +39,7 @@ const usuario: User = new User(
   1,
   "isaiasoliveira",
   "isaiaswebnet@gmail.com",
-  UserRole.CUSTOMER
+  UserRole.USER
 );
 
 const carrinho: Cart = new Cart();

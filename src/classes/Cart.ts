@@ -58,6 +58,21 @@ export class Cart {
     return this.items;
   }
 
+  loadItems(items: CartItem[]): void {
+    this.items = items.map((row: CartItem) => ({
+      quantity: row.quantity,
+      variantNote: row.variantNote,
+      product: {
+        ...row.product,
+        category: { ...row.product.category },
+      },
+    }));
+  }
+
+  clear(): void {
+    this.items = [];
+  }
+
   decreaseQuantity(productId: number): void {
     const index: number = this.items.findIndex(
       (item: CartItem) => item.product.id === productId

@@ -1,6 +1,6 @@
 export enum UserRole {
   ADMIN = "ADMIN",
-  CUSTOMER = "CUSTOMER",
+  USER = "USER",
 }
 
 export class User {
