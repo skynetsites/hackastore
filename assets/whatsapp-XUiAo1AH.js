@@ -1,0 +1,4 @@
+import{d as r}from"./brValidation-zCcficwX.js";import{f as i}from"./format-FMdPGzBH.js";function l(n){if(typeof n=="string")return n.trim();const e=[n.street,n.number].filter(Boolean).join(", ").trim(),t=[n.neighborhood,[n.city,n.state].filter(Boolean).join("/")].filter(Boolean).join(" — ");return[e,t].filter(Boolean).join(`
+`)}function u(n){const e=n.items.map(t=>`• ${t.product.name} × ${t.quantity} — ${i(t.product.price*t.quantity)}`);return["Novo pedido — loja (simulação)","",`Cliente: ${n.customerName.trim()}`,`Telefone/WhatsApp: ${n.customerPhone.trim()}`,"",...e,"",`Total: ${i(n.total)}`,"","Endereço de entrega:",l(n.shipping)].join(`
+`)}function m(n,e,t,o){return[o!=null&&o.trim()?`Olá, ${o.trim()}!`:"Olá!","",`Pedido ${n}`,`Total: ${i(e)}`,"","Link de pagamento:",t].join(`
+`)}function c(n,e){return`https://wa.me/${r(n)}?text=${encodeURIComponent(e)}`}export{m as a,u as b,c as w};
