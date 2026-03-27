@@ -167,11 +167,11 @@ export default defineComponent({
           >
             <i class="pi pi-whatsapp text-3xl" aria-hidden="true" />
           </div>
-          <h1 class="text-2xl font-bold m-0">Pedido recebido!</h1>
+          <h1 class="text-2xl font-bold m-3">Pedido recebido!</h1>
           
           <div class="inline-flex items-center justify-center"> <AppBreadcrumb :home="home" :items="breadcrumbItems" /></div>
-          <p class="m-0 text-gray-600 dark:text-gray-400 text-sm max-w-lg mx-auto">
-            Obrigado por comprar conosco.
+          <p class="m-1 text-gray-600 dark:text-gray-400 text-sm max-w-lg mx-auto">
+            Obrigado por comprar conosco! Estamos muito felizes em ter você como cliente.
           </p>
         </div>
 
