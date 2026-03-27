@@ -26,10 +26,10 @@ export function buildCheckoutMessage(opts: {
       `• ${i.product.name} × ${i.quantity} — ${formatBRL(i.product.price * i.quantity)}`
   );
   return [
-    "Novo pedido — loja (simulação)",
+    "Novo pedido — HackaStore",
     "",
     `Cliente: ${opts.customerName.trim()}`,
-    `Telefone/WhatsApp: ${opts.customerPhone.trim()}`,
+    `Telefone (WhatsApp): ${opts.customerPhone.trim()}`,
     "",
     ...lines,
     "",
