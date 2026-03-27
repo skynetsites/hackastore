@@ -1,10 +1,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { RouterLink } from "vue-router";
 import { DEFAULT_HOME_BANNER_IMAGES } from "../constants/homeBannerDefaults";
 import { storeSettingsService } from "../services/storeSettingsService";
 
 export default defineComponent({
   name: "HomeBannerCarousel",
+  components: {
+    RouterLink,
+  },
 
   computed: {
     slides(): { image: string; link: string }[] {
@@ -14,7 +18,7 @@ export default defineComponent({
         .filter(Boolean)
         .slice(0, 1)[0];
 
-      const extra = extraImage ? [{ image: extraImage, link: "/" }] : []; // link padrão caso precise
+      const extra = extraImage ? [{ image: extraImage, link: "/" }] : []; // link padrão
       return [...DEFAULT_HOME_BANNER_IMAGES, ...extra];
     },
     showCarousel(): boolean {
@@ -51,14 +55,14 @@ export default defineComponent({
         <div
           class="relative w-full aspect-[21/9] min-h-[140px] sm:min-h-[180px] md:min-h-[220px] max-h-[330px] bg-gray-200 dark:bg-gray-800"
         >
-          <a :href="slotProps.data.link"> <!-- ou <router-link :to="slotProps.data.link"> para SPA -->
+          <RouterLink :to="slotProps.data.link">
             <img
               :src="slotProps.data.image"
               alt=""
               class="absolute inset-0 w-full h-full object-cover"
               loading="lazy"
             />
-          </a>
+          </RouterLink>
         </div>
       </template>
     </Carousel>
