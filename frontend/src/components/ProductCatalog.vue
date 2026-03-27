@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRoute } from 'vue-router';
 import type { Product } from "@shared/models/Product";
 import { categoryService } from "../services/categoryService";
 import { cartService } from "../services/cartService";
@@ -57,10 +56,8 @@ export default defineComponent({
     f.categorySlugs = [];
   }
 
-  // 🔹 aplica filtros existentes
   let result = filterProducts(this.allProducts, f, matchesProductCategorySlug);
 
-  // 🔥 AQUI ENTRA A BUSCA
   const search = String(this.$route.query.search || '').toLowerCase();
 
   if (search) {

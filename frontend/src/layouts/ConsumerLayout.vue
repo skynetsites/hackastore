@@ -1,7 +1,6 @@
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed } from "vue";
+import { defineComponent } from "vue";
 import { LocalCategory } from "@shared/models/LocalCategory";
-import { useRouter } from "vue-router";
 import { MenuItem } from "primevue/menuitem";
 import { CartItem } from "@shared/models/CartItem";
 import { cartService } from "../services/cartService";
@@ -29,49 +28,21 @@ export default defineComponent({
       message: "",
       error: "",
       showTop: false,
-      isLogged: authService.isAuthenticated()
-    };
-  },
-
-  setup() {
-    const router = useRouter();
-    const search = ref("");
-    const categories = ref<LocalCategory[]>([]);
-
-    const firstColumn = computed(() => categories.value.slice(0, 6));
-    const secondColumn = computed(() => categories.value.slice(6, 12));
-
-    const goToSearch = () => {
-      router.push({
-        name: "products",
-        query: { search: search.value },
-      });
-    };
-
-    const loadCategories = async () => {
-      try {
-        await categoryService.seedFromApiIfEmpty();
-        categories.value = categoryService.list();
-      } catch (err) {
-        console.error("Erro ao carregar categorias", err);
-        categories.value = [];
-      }
-    };
-
-    onMounted(() => {
-      void loadCategories();
-    });
-
-    return {
-      categories,
-      search,
-      goToSearch,
-      firstColumn,
-      secondColumn,
+      isLogged: authService.isAuthenticated(),
+      search: "" as string,
+      categories: [] as LocalCategory[],
     };
   },
 
   computed: {
+    firstColumn(): LocalCategory[] {
+      return this.categories.slice(0, 6);
+    },
+
+    secondColumn(): LocalCategory[] {
+      return this.categories.slice(6, 12);
+    },
+    
     cartCount(): number {
       this.cartTick;
       return cartService.getTotalItems();
@@ -228,6 +199,7 @@ export default defineComponent({
   mounted() {
     this.applyStoreTheme();
     this.updateViewport();
+    this.loadCategories();
     window.addEventListener("resize", this.updateViewport);
     window.addEventListener('scroll', this.handleScroll);
     document.addEventListener("click", this.handleClickOutside);
@@ -256,24 +228,35 @@ export default defineComponent({
 
   methods: {
     formatBRL,
-    toggle(event: Event) {
-      (this.$refs.menu as any).toggle(event);
-    },
+
     toggleSearch() {
       this.showSearch = !this.showSearch;
-
-      if (this.showSearch) {
-        this.$nextTick(() => {
-          const comp = this.$refs.searchInput as any;
-          const input = comp?.$el?.querySelector("input");
-          input?.focus();
-        });
-      }
     },
 
     handleSearch() {
-      this.goToSearch(); 
+      this.goToSearch();
+    },
+
+    goToSearch() {
+      this.$router.push({
+        name: "products",
+        query: { search: this.search },
+      });
       this.showSearch = false;
+    },
+
+    async loadCategories() {
+      try {
+        await categoryService.seedFromApiIfEmpty();
+        this.categories = categoryService.list();
+      } catch (err) {
+        console.error("Erro ao carregar categorias", err);
+        this.categories = [];
+      }
+    },
+    
+    toggle(event: Event) {
+      (this.$refs.menu as any).toggle(event);
     },
 
     handleClickOutside(event: MouseEvent) {

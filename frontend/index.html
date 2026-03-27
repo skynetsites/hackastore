@@ -5,6 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>evoluindo-ui-primevue-tailwind-frontend</title>
+    <script>
+      (function () { // Executa a correção de URL ANTES do React carregar
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+
+        if (redirect) {
+          // Remove o parâmetro da URL sem recarregar a página
+          window.history.replaceState(null, '', redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
