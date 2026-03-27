@@ -7,14 +7,15 @@ export default defineComponent({
   name: "HomeBannerCarousel",
 
   computed: {
-    slides(): string[] {
-      const extra = storeSettingsService
+    slides(): { image: string; link: string }[] {
+      const extraImage = storeSettingsService
         .get()
         .homeBannerImages.map((x) => x.trim())
         .filter(Boolean)
         .slice(0, 1)[0];
-      const base = [...DEFAULT_HOME_BANNER_IMAGES];
-      return extra ? [...base, extra] : base;
+
+      const extra = extraImage ? [{ image: extraImage, link: "/" }] : []; // link padrão caso precise
+      return [...DEFAULT_HOME_BANNER_IMAGES, ...extra];
     },
     showCarousel(): boolean {
       return DEFAULT_HOME_BANNER_IMAGES.length >= 3;
@@ -50,24 +51,16 @@ export default defineComponent({
         <div
           class="relative w-full aspect-[21/9] min-h-[140px] sm:min-h-[180px] md:min-h-[220px] max-h-[330px] bg-gray-200 dark:bg-gray-800"
         >
-          <img
-            :src="slotProps.data"
-            alt=""
-            class="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-          />
+          <a :href="slotProps.data.link"> <!-- ou <router-link :to="slotProps.data.link"> para SPA -->
+            <img
+              :src="slotProps.data.image"
+              alt=""
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          </a>
         </div>
       </template>
     </Carousel>
   </div>
 </template>
-
-<style scoped>
-.home-banner-carousel :deep(.p-carousel-indicators) {
-  padding-bottom: 0.5rem;
-}
-.home-banner-carousel :deep(.p-carousel-prev),
-.home-banner-carousel :deep(.p-carousel-next) {
-  color: inherit;
-}
-</style>
