@@ -28,7 +28,8 @@ export default defineComponent({
       loading: false,
       message: "",
       error: "",
-      showTop: false
+      showTop: false,
+      isLogged: authService.isAuthenticated()
     };
   },
 
@@ -357,16 +358,20 @@ export default defineComponent({
       if (this.darkMode) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
     },
+    checkLogin() {
+      this.isLogged = authService.isAuthenticated();
+    },
 
     logout(): void {
       authService.logout();
+      this.isLogged = false;
       this.$toast.add({
         severity: "info",
         summary: "Sessão encerrada",
         detail: "Até logo!",
         life: 2500,
       });
-      this.$router.replace({ name: "login" });
+      this.$router.replace({ path: "/login" });
     },
 
     async handleSubscribe() {
@@ -660,7 +665,7 @@ export default defineComponent({
             />
             <div>
               <Button
-                icon="pi pi-user"
+                :icon="isLogged ? 'pi pi-sign-in':'pi pi-user'"
                 rounded
                 class="py-2 px-5 inline-block font-semibold tracking-wide align-middle transition duration-500 text-base text-center bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none"
                 aria-label="Usiário"

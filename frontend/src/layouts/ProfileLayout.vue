@@ -31,7 +31,7 @@ export default defineComponent({
         detail: "Até logo!",
         life: 2500,
       });
-      this.$router.replace({ name: "home" });
+      this.$router.replace({ path: "/" });
     },
   },
 });
@@ -42,7 +42,7 @@ export default defineComponent({
     <aside class="lg:w-56 shrink-0">
       <Card class="bg-gray-100! dark:bg-gray-800! border border-gray-200 dark:border-gray-700">
         <template #title>
-          <span class="text-base">Minha conta</span>
+          <span class="text-base text-gray-800! dark:text-gray-200!">Minha conta</span>
         </template>
         <template #content>
           <p v-if="user" class="text-sm text-gray-600 dark:text-gray-400 m-0 mb-3">

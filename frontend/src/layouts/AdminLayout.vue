@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { authService } from "../services/authService";
 
 export default defineComponent({
   name: "AdminLayout",
@@ -22,6 +23,9 @@ export default defineComponent({
       if (this.$route.name === "admin-settings") return "Configurações";
       return "";
     },
+    user() {
+      return authService.getCurrentUser();
+    },
   },
 
   mounted() {
@@ -34,6 +38,16 @@ export default defineComponent({
       if (this.darkMode) document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
     },
+    logout(): void {
+      authService.logout();
+      this.$toast.add({
+        severity: "info",
+        summary: "Sessão encerrada",
+        detail: "Até logo!",
+        life: 2500,
+      });
+      this.$router.replace({ path: "/" });
+    }
   },
 });
 </script>
@@ -96,6 +110,7 @@ export default defineComponent({
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin"
           >
+            <i class="pi pi-objects-column" aria-hidden="true" />
             Dashboard
           </RouterLink>
           <RouterLink
@@ -103,6 +118,7 @@ export default defineComponent({
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin/products"
           >
+            <i class="pi pi-box" aria-hidden="true" />  
             Produtos
           </RouterLink>
           <RouterLink
@@ -110,6 +126,7 @@ export default defineComponent({
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin/categories"
           >
+            <i class="pi pi-bars" aria-hidden="true" /> 
             Categorias
           </RouterLink>
           <RouterLink
@@ -117,6 +134,7 @@ export default defineComponent({
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin/reports"
           >
+            <i class="pi pi-chart-bar" aria-hidden="true" />  
             Relatórios
           </RouterLink>
           <RouterLink
@@ -124,13 +142,15 @@ export default defineComponent({
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin/users"
           >
+            <i class="pi pi-user" aria-hidden="true" />  
             Usuários
           </RouterLink>
           <RouterLink
             class="px-3 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 no-underline text-gray-800 dark:text-gray-200"
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin/orders"
-          >
+          > 
+            <i class="pi pi-shopping-bag" aria-hidden="true" /> 
             Pedidos
           </RouterLink>
           <RouterLink
@@ -138,8 +158,17 @@ export default defineComponent({
             active-class="!bg-blue-600/20 !font-semibold"
             to="/admin/settings"
           >
+            <i class="pi pi-cog" aria-hidden="true" />
             Configurações
           </RouterLink>
+          <button
+              type="button"
+              class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-left w-full text-red-700 dark:text-red-300 hover:bg-red-100/50 dark:hover:bg-red-900/30 border-0 bg-transparent cursor-pointer"
+              @click="logout"
+            >
+              <i class="pi pi-sign-out" aria-hidden="true" />
+              Sair
+            </button>
           <RouterLink
             class="px-3 py-2 rounded-md hover:bg-amber-200/50 dark:hover:bg-amber-900/30 no-underline text-amber-900 dark:text-amber-100 mt-2"
             to="/"
@@ -153,7 +182,16 @@ export default defineComponent({
         v-model:visible="mobileMenuOpen"
         modal
         header="Menu"
-        class="w-[min(100vw-2rem,22rem)]"
+        class="
+        w-[min(100vw-2rem,22rem)]
+        transition-colors! 
+        bg-gray-200! 
+        dark:bg-gray-900! 
+        text-gray-900! 
+        dark:text-gray-100! 
+        border-gray-300! 
+        dark:border-gray-700!
+        "
         :dismissable-mask="true"
         :breakpoints="{ '960px': '90vw' }"
       >

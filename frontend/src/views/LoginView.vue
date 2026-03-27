@@ -15,31 +15,49 @@ export default defineComponent({
 
   methods: {
     async submit(): Promise<void> {
-      this.loading = true;
-      try {
-        const res = authService.login(this.email, this.password);
-        if (!res.ok) {
-          this.$toast.add({
-            severity: "error",
-            summary: "Falha no login",
-            detail: res.error,
-            life: 4000,
-          });
-          return;
-        }
-        this.$toast.add({
-          severity: "success",
-          summary: "Bem-vindo",
-          detail: res.user.name,
-          life: 2500,
-        });
-        const redirect = this.$route.query.redirect;
-        const path = typeof redirect === "string" && redirect ? redirect : "/";
-        await this.$router.replace(path);
-      } finally {
-        this.loading = false;
+  this.loading = true;
+  try {
+    const res = authService.login(this.email, this.password);
+
+    if (!res.ok) {
+      this.$toast.add({
+        severity: "error",
+        summary: "Falha no login",
+        detail: res.error,
+        life: 4000,
+      });
+      return;
+    }
+
+    const user = res.user;
+
+    this.$toast.add({
+      severity: "success",
+      summary: "Bem-vindo",
+      detail: user.name,
+      life: 2500,
+    });
+
+    const redirect = this.$route.query.redirect;
+
+    let path = "/";
+
+    if (typeof redirect === "string" && redirect) {
+      path = redirect;
+    } else {
+      if (user.role === "ADMIN") {
+        path = "/admin";
+      } else {
+        path = "/profile/edit";
       }
-    },
+    }
+
+    await this.$router.replace(path);
+
+  } finally {
+    this.loading = false;
+  }
+},
   },
 });
 </script>

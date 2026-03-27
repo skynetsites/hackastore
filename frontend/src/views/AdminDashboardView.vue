@@ -38,25 +38,25 @@ export default defineComponent({
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <Card class="bg-white/60 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700">
+      <Card class="transition-colors! bg-gray-200! dark:bg-gray-900! text-gray-900! dark:text-gray-100! border-gray-300! dark:border-gray-700!">
         <template #title>Usuários</template>
         <template #content>
           <p class="text-3xl font-bold m-0">{{ users }}</p>
         </template>
       </Card>
-      <Card class="bg-white/60 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700">
+      <Card class="transition-colors! bg-gray-200! dark:bg-gray-900! text-gray-900! dark:text-gray-100! border-gray-300! dark:border-gray-700!">
         <template #title>Produtos locais</template>
         <template #content>
           <p class="text-3xl font-bold m-0">{{ localProducts }}</p>
         </template>
       </Card>
-      <Card class="bg-white/60 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700">
+      <Card class="transition-colors! bg-gray-200! dark:bg-gray-900! text-gray-900! dark:text-gray-100! border-gray-300! dark:border-gray-700!">
         <template #title>Pedidos</template>
         <template #content>
           <p class="text-3xl font-bold m-0">{{ summary.orders }}</p>
         </template>
       </Card>
-      <Card class="bg-white/60 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700">
+      <Card class="transition-colors! bg-gray-200! dark:bg-gray-900! text-gray-900! dark:text-gray-100! border-gray-300! dark:border-gray-700!">
         <template #title>Receita simulada</template>
         <template #content>
           <p class="text-2xl font-bold m-0">{{ formatBRL(summary.revenue) }}</p>

@@ -49,7 +49,7 @@ export default defineComponent({
           life: 3000,
         });
         const redirect = this.$route.query.redirect;
-        const path = typeof redirect === "string" && redirect ? redirect : "/";
+        const path = typeof redirect === "string" && redirect ? redirect : "/profile/edit";
         await this.$router.replace(path);
       } finally {
         this.loading = false;

@@ -168,7 +168,36 @@ export default defineComponent({
       <Button label="Nova categoria" icon="pi pi-plus" @click="openCreate" />
     </div>
 
-    <DataTable :value="rows" :loading="loading" paginator :rows="10" responsive-layout="scroll">
+    <DataTable 
+      :value="rows" 
+      :loading="loading" 
+      paginator 
+      :rows="10" 
+      responsive-layout="scroll"
+      transition-colors!
+      class="
+        [&_.p-datatable-header-cell]:bg-gray-300! 
+        [&_.p-datatable-header-cell]:dark:bg-gray-950! 
+        [&_.p-datatable-header-cell]:text-gray-950! 
+        [&_.p-datatable-header-cell]:dark:text-gray-100! 
+        [&_.p-datatable-header-cell]:border-gray-300! 
+        [&_.p-datatable-header-cell]:dark:border-gray-700!
+
+        [&_.p-datatable-tbody]:[&_tr]:bg-gray-200!
+        [&_.p-datatable-tbody]:[&_tr]:dark:bg-gray-900! 
+        [&_.p-datatable-tbody]:[&_tr]:text-gray-900! 
+        [&_.p-datatable-tbody]:[&_tr]:dark:text-gray-100! 
+        [&_.p-datatable-tbody]:[&_tr]:border-gray-300! 
+        [&_.p-datatable-tbody]:[&_tr]:dark:border-gray-700!
+
+        [&_.p-paginator]:bg-gray-300! 
+        [&_.p-paginator]:dark:bg-gray-950! 
+        [&_.p-paginator]:text-gray-950! 
+        [&_.p-paginator]:dark:text-gray-100! 
+        [&_.p-paginator]:border-gray-300! 
+        [&_.p-paginator]:dark:border-gray-700!
+      "
+    >
       <Column field="id" header="ID" />
       <Column header="Imagem" :exportable="false">
         <template #body="{ data }">
