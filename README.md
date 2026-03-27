@@ -145,26 +145,6 @@ npm run dev
 
 ---
 
-## Critérios de Avaliação
-
-* 20% → MVP completo
-* 20% → Usabilidade
-* 10% → Interface e responsividade
-* 15% → Organização do código
-* 15% → Criatividade
-* 10% → Apresentação (pitch)
-
----
-
-## Entregas do Hackathon
-
-* Link do repositório
-* Projeto funcional publicado (Vercel, Netlify, etc.)
-* Descrição da loja
-* Vídeo pitch (até 5 minutos)
-
----
-
 ## Aprendizados
 
 Durante o desenvolvimento:
