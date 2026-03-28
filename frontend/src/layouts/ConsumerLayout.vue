@@ -413,16 +413,20 @@ export default defineComponent({
   >
     <header class="bg-gray-100 dark:bg-gray-800">
       <div class="tagline bg-emerald-950 dark:bg-gray-900 py-2">
-        <div class="container relative">
-          <div class="grid grid-cols-1">
+        <div class="relative">
+          <div class="grid grid-cols-3">
+            <div class="text-center"></div>
             <div class="text-center">
               <h6 class="text-white font-normal">
                 Indique um amigo e ganhem juntos R$ 200 em créditos 🎉
               </h6>
             </div>
+            <div class="hidden flex justify-end items-center gap-3">
+              <div class="text-white font-normal">Olá, </div>
+              <Avatar class="hidden p-overlay-badge" image="https://primefaces.org/cdn/primevue/images/organization/walter.jpg" shape="circle" />
+            </div>
           </div>
         </div>
-        <!--end container-->
       </div>
       <div class="max-w-[1320px] mx-auto px-3 sm:px-6 py-3 sm:py-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -650,7 +654,10 @@ export default defineComponent({
               <Button
                 :icon="isLogged ? 'pi pi-sign-in':'pi pi-user'"
                 rounded
-                class="py-2 px-5 inline-block font-semibold tracking-wide align-middle transition duration-500 text-base text-center bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none"
+                :class="[
+                  isLogged ? 'bg-emerald-600! text-gray-100!' : 'bg-primary',
+                  'py-2 px-5 inline-block font-semibold tracking-wide align-middle transition duration-500 text-base text-center text-white rounded-md hover:bg-primary-dark focus:outline-none'
+                ]"
                 aria-label="Usiário"
                 @click="toggle"
               />
@@ -695,7 +702,10 @@ export default defineComponent({
                   
                   [&_.p-menubar-item-icon]:dark:text-gray-400! 
                   [&_.p-menubar-item-link]:hover:[&_.p-menubar-item-icon]:text-green-600! 
-                  [&_.p-menubar-item-link]:hover:[&_.p-menubar-item-icon]:dark:text-green-400! 
+                  [&_.p-menubar-item-link]:hover:[&_.p-menubar-item-icon]:dark:text-green-400!
+                  
+                  [&_.p-focus]:text-green-600!
+                  [&_.p-focus]:dark:text-green-400!
 
                   [&_.p-menubar-item-content]:bg-transparent! 
                   [&_.p-menubar-item-content]:hover:bg-transparent! 
@@ -1105,7 +1115,7 @@ export default defineComponent({
 
       <div class="py-7.5 px-0 border-t border-slate-800 dark:border-slate-700">
         <div class="max-w-[1320px] mx-auto px-3 sm:px-6 pb-0">
-          <div class="container relative text-center">
+          <div class="relative text-center">
             <div class="grid md:grid-cols-2 items-center">
               <div class="md:text-start text-center">
                 <p>

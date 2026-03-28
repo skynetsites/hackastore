@@ -15,4 +15,5 @@ export interface StoreSettings {
    * As 3 primeiras imagens do banner são fixas no frontend.
    */
   homeBannerImages: string[];
+  homeBannerLinks: string[];
 }

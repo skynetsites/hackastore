@@ -1,3 +1,4 @@
+// storeSettingsService.ts
 import type { StoreSettings, StoreThemePreference } from "@shared/models/StoreSettings";
 import { STORAGE } from "./storageKeys";
 
@@ -10,27 +11,42 @@ const DEFAULTS: StoreSettings = {
   paymentSettings: {
     whatsappNumber: "5585986891116",
     pixKey: "05ed170a-9ddf-4526-94ac-d17affc230bc",
-    pixQrCode: "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=00020126580014BR.GOV.BCB.PIX013605ed170a-9ddf-4526-94ac-d17affc230bc5204000053039865802BR5925Francisco%20Isaias%20Oliveira6009SAO%20PAULO62140510dvfzXaciz76304B02E",
+    pixQrCode:
+      "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=00020126580014BR.GOV.BCB.PIX013605ed170a-9ddf-4526-94ac-d17affc230bc5204000053039865802BR5925Francisco%20Isaias%20Oliveira6009SAO%20PAULO62140510dvfzXaciz76304B02E",
   },
-  homeBannerImages: [],
+  homeBannerImages: [], // 4ª imagem
+  homeBannerLinks: [],  // link da 4ª imagem
 };
 
 function read(): StoreSettings {
   try {
     const raw = localStorage.getItem(STORAGE.STORE_SETTINGS);
-    if (!raw) return { ...DEFAULTS, paymentSettings: { ...DEFAULTS.paymentSettings } };
+    if (!raw)
+      return {
+        ...DEFAULTS,
+        paymentSettings: { ...DEFAULTS.paymentSettings },
+        homeBannerImages: [],
+        homeBannerLinks: [],
+      };
+
     const parsed = JSON.parse(raw) as Partial<StoreSettings>;
-    const banner = Array.isArray(parsed.homeBannerImages)
+
+    const images = Array.isArray(parsed.homeBannerImages)
       ? parsed.homeBannerImages.filter((x): x is string => typeof x === "string")
-      : DEFAULTS.homeBannerImages;
+      : [];
+    const links = Array.isArray(parsed.homeBannerLinks)
+      ? parsed.homeBannerLinks.filter((x): x is string => typeof x === "string")
+      : [];
+
     return {
       ...DEFAULTS,
       ...parsed,
-      homeBannerImages: banner.slice(0, 1),
+      homeBannerImages: images.slice(0, 1), // apenas 1 extra
+      homeBannerLinks: links.slice(0, 1),
       paymentSettings: { ...DEFAULTS.paymentSettings, ...parsed.paymentSettings },
     };
   } catch {
-    return { ...DEFAULTS, paymentSettings: { ...DEFAULTS.paymentSettings } };
+    return { ...DEFAULTS, paymentSettings: { ...DEFAULTS.paymentSettings }, homeBannerImages: [], homeBannerLinks: [] };
   }
 }
 
@@ -50,7 +66,13 @@ export const storeSettingsService = {
   },
 
   update(patch: Partial<StoreSettings>): StoreSettings {
-    const next = { ...read(), ...patch };
+    const next: StoreSettings = {
+      ...read(),
+      ...patch,
+      homeBannerImages: patch.homeBannerImages ?? read().homeBannerImages,
+      homeBannerLinks: patch.homeBannerLinks ?? read().homeBannerLinks,
+      paymentSettings: { ...read().paymentSettings, ...patch.paymentSettings },
+    };
     write(next);
     return next;
   },

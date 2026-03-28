@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primeuix/themes/aura";
 import ConfirmationService from "primevue/confirmationservice";
+import Avatar from 'primevue/avatar';
 import Menu from 'primevue/menu';
 import Menubar from 'primevue/menubar';
 import ToastService from "primevue/toastservice";
@@ -51,6 +52,7 @@ app.use(ConfirmationService);
 app.use(ToastService);
 app.use(router);
 
+app.component("Avatar", Avatar);
 app.component("Card", Card);
 app.component("Button", Button);
 app.component("Select", Select);

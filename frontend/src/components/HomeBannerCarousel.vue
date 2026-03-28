@@ -10,21 +10,28 @@ export default defineComponent({
     RouterLink,
   },
 
-  computed: {
-    slides(): { image: string; link: string }[] {
-      const extraImage = storeSettingsService
-        .get()
-        .homeBannerImages.map((x) => x.trim())
-        .filter(Boolean)
-        .slice(0, 1)[0];
+ computed: {
+  slides(): { image: string; link: string }[] {
+    const settings = storeSettingsService.get();
 
-      const extra = extraImage ? [{ image: extraImage, link: "/" }] : []; // link padrão
-      return [...DEFAULT_HOME_BANNER_IMAGES, ...extra];
-    },
-    showCarousel(): boolean {
-      return DEFAULT_HOME_BANNER_IMAGES.length >= 3;
-    },
+    // Pega a primeira imagem extra, se existir
+    const extraImage = settings.homeBannerImages
+      ?.map((x) => x.trim())
+      .filter(Boolean)
+      .slice(0, 1)[0];
+
+    // Pega o link correspondente
+    const extraLink = extraImage && settings.homeBannerLinks?.[0]?.trim() ? settings.homeBannerLinks[0].trim() : "/";
+
+    const extra = extraImage ? [{ image: extraImage, link: extraLink }] : [];
+
+    return [...DEFAULT_HOME_BANNER_IMAGES, ...extra];
   },
+
+  showCarousel(): boolean {
+    return DEFAULT_HOME_BANNER_IMAGES.length >= 3;
+  },
+},
 });
 </script>
 
