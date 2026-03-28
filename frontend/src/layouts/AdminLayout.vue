@@ -102,7 +102,7 @@ export default defineComponent({
              <div class="flex items-center justify-between gap-2">       
                     <Avatar image="https://primefaces.org/cdn/primevue/images/organization/walter.jpg" class="mr-2" shape="circle" />
                     <span class="inline-flex flex-col items-start text-gray-800! dark:text-gray-200!">
-                        <span class="text-sm font-bold">{{ firstName }}</span>
+                        <span class="text-sm font-bold">Olá, {{ firstName }}</span>
                         <span class="text-sm">{{ userRoleLabel }}</span>
                     </span>
                   </div>

@@ -56,7 +56,7 @@ export default defineComponent({
             class="relative overflow-hidden w-full border-0 bg-transparent flex items-start mb-2">
                     <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/ionibowcher.png" class="mr-2" shape="circle" />
                     <span class="inline-flex flex-col items-start text-gray-800! dark:text-gray-200!">
-                        <span class="text-sm font-bold">{{ firstName }}</span>
+                        <span class="text-sm font-bold">Olá, {{ firstName }}</span>
                         <span class="text-sm">{{ userRoleLabel }}</span>
                     </span>
                   </div>
