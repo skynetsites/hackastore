@@ -102,7 +102,7 @@ export default defineComponent({
       detail: "Redirecionando para o carrinho...",
       life: 3000,
     });
-
+    
     setTimeout(() => {
       this.$router.replace({ name: "cart" });
     }, 4000);
@@ -184,6 +184,8 @@ export default defineComponent({
     },
 
     async resolveUser(): Promise<UserRecord | null> {
+      const user = authService.getCurrentUser();
+console.log("USER NO RESOLVE:", user);
       if (this.loggedIn) {
         return authService.getCurrentUser()!;
       }
@@ -263,6 +265,7 @@ export default defineComponent({
           phone: digitsOnly(this.phone),
           cpf: digitsOnly(this.cpf),
         };
+        
         const shipping = {
           street: this.street.trim(),
           number: this.number.trim(),

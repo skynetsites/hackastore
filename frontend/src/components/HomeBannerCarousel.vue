@@ -36,7 +36,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="showCarousel" class="w-full -mx-4 sm:mx-0 mb-8 sm:mb-10">
+  <div v-if="showCarousel" class="w-full md-mx-4 sm:mx-0 mb-8 sm:mb-10">
     <Carousel
       :value="slides"
       :num-visible="1"
@@ -54,13 +54,15 @@ export default defineComponent({
         [&_.p-carousel-indicator-list]:flex! 
         [&_.p-carousel-indicator-list]:justify-center! 
         [&_.p-carousel-indicator-list]:gap-2! 
-        [&_.p-carousel-indicator-list]:bottom-1!
+        md:[&_.p-carousel-indicator-list]:bottom-1!
+        [&_.p-carousel-indicator-list]:bottom-0!
+        [&_.p-carousel-indicator-list]:p-3!
         overflow-hidden
         relative"
     >
       <template #item="slotProps">
         <div
-          class="relative w-full aspect-[21/9] min-h-[140px] sm:min-h-[180px] md:min-h-[220px] max-h-[330px] bg-gray-200 dark:bg-gray-800"
+          class="relative w-full md:aspect-[21/9] min-h-[120px] sm:min-h-[180px] md:min-h-[220px] max-h-[330px] bg-gray-200 dark:bg-gray-800"
         >
           <RouterLink :to="slotProps.data.link">
             <img

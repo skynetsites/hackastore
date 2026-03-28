@@ -20,6 +20,15 @@ export default defineComponent({
     user() {
       return authService.getCurrentUser();
     },
+    firstName() {
+      this.authTick;
+      if (!this.user || !this.user.name) return '';
+      return this.user.name.trim().split(' ').slice(0, 2).join(' ');
+    },
+    userRoleLabel() {
+      this.authTick;
+      return authService.isAdmin() ? 'Admin' : 'Cliente';
+    },
   },
 
   methods: {
@@ -42,12 +51,18 @@ export default defineComponent({
     <aside class="lg:w-56 shrink-0">
       <Card class="bg-gray-100! dark:bg-gray-800! border border-gray-200 dark:border-gray-700">
         <template #title>
-          <span class="text-base text-gray-800! dark:text-gray-200!">Minha conta</span>
+          <div 
+            v-if="user"
+            class="relative overflow-hidden w-full border-0 bg-transparent flex items-start mb-2">
+                    <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/ionibowcher.png" class="mr-2" shape="circle" />
+                    <span class="inline-flex flex-col items-start text-gray-800! dark:text-gray-200!">
+                        <span class="text-sm font-bold">{{ firstName }}</span>
+                        <span class="text-sm">{{ userRoleLabel }}</span>
+                    </span>
+                  </div>
+          <span class="text-base text-gray-800! dark:text-gray-200! mb-3">Minha conta</span>
         </template>
         <template #content>
-          <p v-if="user" class="text-sm text-gray-600 dark:text-gray-400 m-0 mb-3">
-            {{ user.name }}
-          </p>
           <nav class="flex flex-col gap-1" aria-label="Área do usuário">
             <RouterLink
               v-for="item in menuItems"

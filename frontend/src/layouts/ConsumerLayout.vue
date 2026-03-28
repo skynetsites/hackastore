@@ -35,14 +35,55 @@ export default defineComponent({
   },
 
   computed: {
+    user() {
+      return authService.getCurrentUser();
+    },
+    greeting(): string {
+      this.authTick;
+      
+      const hour = new Date().getHours();
+      let saudacao = 'Olá';
+  
+      if (hour < 12) saudacao = 'Bom dia';
+      else if (hour < 18) saudacao = 'Boa tarde';
+      else saudacao = 'Boa noite';
+  
+      if (!authService.isAuthenticated()) return `${saudacao}, Cliente/Visitante`;
+  
+      const user = authService.getCurrentUser();
+      if (!user || !user.name) return `${saudacao}, Cliente/Visitante`;
+
+      const nameParts = user.name.trim().split(' ');
+      const displayName = nameParts.slice(0, 2).join(' ');
+ 
+      return `${saudacao}, ${displayName}`;
+    },
+    avatarUrl(): string {
+      this.authTick;
+  
+      if (!authService.isAuthenticated()) {
+         return 'https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png';
+      }
+      
+      return authService.isAdmin()
+        ? 'https://primefaces.org/cdn/primevue/images/organization/walter.jpg'
+        : 'https://primefaces.org/cdn/primevue/images/avatar/ionibowcher.png';
+    },
+    firstName() {
+      this.authTick;
+      if (!this.user || !this.user.name) return '';
+      return this.user.name.trim().split(' ').slice(0, 2).join(' ');
+    },
+    userRoleLabel() {
+      this.authTick;
+      return authService.isAdmin() ? 'Admin' : 'Cliente';
+    },
     firstColumn(): LocalCategory[] {
       return this.categories.slice(0, 6);
     },
-
     secondColumn(): LocalCategory[] {
       return this.categories.slice(6, 12);
     },
-    
     cartCount(): number {
       this.cartTick;
       return cartService.getTotalItems();
@@ -76,7 +117,7 @@ export default defineComponent({
       return storeSettingsService.get().tagline;
     },
     linkClass(): string {
-      return "px-2 py-1.5 rounded-md text-gray-800 dark:text-gray-200 hover:bg-gray-300/80 dark:hover:bg-gray-800 text-sm sm:text-base";
+      return "px-2 py-1.5 rounded-md text-gray-800 dark:text-gray-200 hover:bg-gray-300/80 dark:hover:bg-gray-800 text-lg";
     },
     itemsLeft(): MenuItem[] {
       return [
@@ -96,7 +137,7 @@ export default defineComponent({
           command: () => this.$router.push("/cart"),
         },
         {
-          label: "Lista de desejos",
+          label: "Lista de Desejos",
           icon: "pi pi-heart",
           command: () => this.$router.push("/profile/favorites"),
         },
@@ -116,7 +157,7 @@ export default defineComponent({
           command: () => this.$router.push("/profile/tracking"),
         },
         {
-          label: "Finalizar pedido",
+          label: "Finalizar Pedido",
           icon: "pi pi-check",
           command: () => this.$router.push("/checkout"),
         },
@@ -228,15 +269,16 @@ export default defineComponent({
 
   methods: {
     formatBRL,
-
+    goToUserArea() {
+      const route = authService.isAdmin() ? '/admin' : '/profile/edit';
+      this.$router.push(route);
+    },
     toggleSearch() {
       this.showSearch = !this.showSearch;
     },
-
     handleSearch() {
       this.goToSearch();
     },
-
     goToSearch() {
       this.$router.push({
         name: "products",
@@ -412,18 +454,20 @@ export default defineComponent({
     class="min-h-screen transition-colors bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
   >
     <header class="bg-gray-100 dark:bg-gray-800">
-      <div class="tagline bg-emerald-950 dark:bg-gray-900 py-2">
+      <div class="hidden md:block tagline bg-emerald-950 dark:bg-gray-900 py-2">
         <div class="relative">
-          <div class="grid grid-cols-3">
+          <div class="grid grid-cols-3 items-center">
             <div class="text-center"></div>
             <div class="text-center">
               <h6 class="text-white font-normal">
                 Indique um amigo e ganhem juntos R$ 200 em créditos 🎉
               </h6>
             </div>
-            <div class="hidden flex justify-end items-center gap-3">
-              <div class="text-white font-normal">Olá, </div>
-              <Avatar class="hidden p-overlay-badge" image="https://primefaces.org/cdn/primevue/images/organization/walter.jpg" shape="circle" />
+            <div 
+                class="flex justify-end items-center gap-3 cursor-pointer" 
+                @click="toggle">
+              <div class="text-white font-normal">Olá, {{ firstName }}</div>
+              <Avatar :image="avatarUrl" class="mr-2" shape="circle" />
             </div>
           </div>
         </div>
@@ -506,12 +550,12 @@ export default defineComponent({
                 class="py-2 px-5 inline-block font-semibold tracking-wide align-middle transition duration-500 text-base text-center bg-primary text-white rounded-md hover:bg-primary-dark focus:outline-none"
                 :aria-expanded="miniCartOpen"
                 aria-label="Carrinho"
-                @click="onCartTriggerClick"
+                 @click="onCartTriggerClick"
               />
 
               <div
                 v-show="miniCartOpen"
-                class="absolute right-0 top-full z-[100] pt-1 w-[min(calc(100vw-1rem),22rem)]"
+                class="fixed md:absolute left-0 md:left-auto right-0 top-16 md:top-full z-[100] px-3 md:px-0 pt-1 w-full md:w-[min(calc(100vw-1rem),22rem)]"
                 role="region"
                 aria-label="Resumo do carrinho"
                 @click.stop
@@ -661,15 +705,71 @@ export default defineComponent({
                 aria-label="Usiário"
                 @click="toggle"
               />
-              <Menu
-                ref="menu"
-                id="overlay_menu"
-                :model="itemsRight"
-                :popup="true"
-                class="hidden! md:flex! p-0! border-0! text-gray-600! dark:text-gray-400! bg-gray-50! dark:bg-gray-800/80! border-gray-200! dark:border-gray-700! shadow-lg! dark:shadow-gray-900/20! z-10! [&_.p-menu-item-content]:bg-transparent! [&_.p-menu-item-content]:hover:bg-transparent! [&_.p-menu-item-content]:focus:bg-transparent! [&_.p-menu-item-content]:shadow-none! [&_.p-menu-item-link]:px-2! [&_.p-menu-item-link]:py-1.5! [&_.p-menu-item-content]:rounded-none! [&_.p-menu-item-link]:text-gray-900! [&_.p-menu-item-link]:dark:text-gray-100!"
-              />
-            </div>
+        <Menu
+          ref="menu"
+          id="overlay_menu"
+          :model="itemsRight"
+          :popup="true"
+          class="
+            p-0! 
+            border-0! 
+            text-gray-600! 
+            dark:text-gray-400! 
+            bg-gray-50! 
+            dark:bg-gray-800/80! 
+            border-gray-200! 
+            dark:border-gray-700! 
+            shadow-lg! 
+            dark:shadow-gray-900/20! 
+            z-10!
+            min-w-[13rem]!
+            left-auto!
+            right-5! 
+            md:right-10! 
+            
+            [&_.p-menu-start]:border-b! 
+            [&_.p-menu-start]:border-slate-200! 
+            [&_.p-menu-start]:dark:border-slate-700!
 
+            [&_.p-menu-item-content]:bg-transparent! 
+            [&_.p-menu-item-content]:hover:bg-transparent! 
+            [&_.p-menu-item-content]:focus:bg-transparent! 
+            [&_.p-menu-item-content]:shadow-none! 
+            [&_.p-menu-item-link]:px-2! 
+            [&_.p-menu-item-link]:py-1.5! 
+            [&_.p-menu-item-content]:rounded-none! 
+            [&_.p-menu-item-link]:text-gray-900! 
+            [&_.p-menu-item-link]:dark:text-gray-100!
+          "
+        >
+          <template
+                v-if="isLoggedIn" 
+                #start 
+            >
+              <button 
+                v-ripple
+                @click="goToUserArea"
+                class="relative overflow-hidden w-full border-0 bg-transparent flex items-start p-2 pl-4 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-none cursor-pointer transition-colors duration-200">
+                    <Avatar :image="avatarUrl" class="mr-2" shape="circle" />    
+                    <span class="inline-flex flex-col items-start">
+                        <span class="text-sm font-bold">Olá, {{ firstName }}</span>
+                        <span class="text-sm">{{ userRoleLabel }}</span>
+                    </span>
+                </button>
+            </template>
+            <template #submenulabel="{ item }">
+                <span class="text-primary font-bold">{{ item.label }}</span>
+            </template>
+            <template #item="{ item, props }">
+                <a v-ripple class="flex items-center" v-bind="props.action">
+                    <span :class="item.icon" />
+                    <span>{{ item.label }}</span>
+                    <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
+                    <span v-if="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+                </a>
+            </template>
+        </Menu>
+            </div>
             <Button
               :icon="darkMode ? 'pi pi-moon' : 'pi pi-sun'"
               rounded
@@ -679,12 +779,10 @@ export default defineComponent({
             />
           </div>
         </div>
-
         <nav class="mt-3 md:mt-4" aria-label="Menu principal">
           <Menubar
             class="text-gray-600! dark:text-gray-400! bg-gray-50! dark:bg-gray-800/80! border-gray-200! dark:border-gray-700! p-1! hover:bg-gray-100! dark:hover:bg-gray-700/50! rounded-md!"
           >
-            <!-- itens à esquerda -->
             <template #start>
               <Menubar
                 :model="itemsLeft"
@@ -720,7 +818,6 @@ export default defineComponent({
                 aria-label="Menu"
                 @click="mobileNavOpen = true"
               />
-
               <Dialog
                 v-model:visible="mobileNavOpen"
                 modal
@@ -744,6 +841,7 @@ export default defineComponent({
                     to="/"
                     @click="mobileNavOpen = false"
                   >
+                    <i class="pi pi-home"></i>  
                     Início
                   </RouterLink>
                   <RouterLink
@@ -752,6 +850,7 @@ export default defineComponent({
                     to="/products"
                     @click="mobileNavOpen = false"
                   >
+                    <i class="pi pi-box"></i> 
                     Produtos
                   </RouterLink>
                   <RouterLink
@@ -760,7 +859,53 @@ export default defineComponent({
                     to="/cart"
                     @click="mobileNavOpen = false"
                   >
-                    Carrinho
+                    <i class="pi pi-shopping-cart"></i> 
+                    Meu Carrinho
+                  </RouterLink>
+                  <RouterLink
+                    :class="linkClass"
+                    active-class="!bg-blue-500/20 !text-blue-800 dark:!text-blue-200 font-semibold"
+                    to="/profile/favorites"
+                    @click="mobileNavOpen = false"
+                  >
+                    <i class="pi pi-heart"></i> 
+                    Lista de Desejos
+                  </RouterLink>
+                  <RouterLink
+                    :class="linkClass"
+                    active-class="!bg-blue-500/20 !text-blue-800 dark:!text-blue-200 font-semibold"
+                    to="/profile/edit"
+                    @click="mobileNavOpen = false"
+                  >
+                    <i class="pi pi-user"></i> 
+                    Minha Conta
+                  </RouterLink>
+                  <RouterLink
+                    :class="linkClass"
+                    active-class="!bg-blue-500/20 !text-blue-800 dark:!text-blue-200 font-semibold"
+                    to="/profile/orders"
+                    @click="mobileNavOpen = false"
+                  >
+                    <i class="pi pi-shopping-bag"></i> 
+                    Meus Pedidos
+                  </RouterLink>
+                  <RouterLink
+                    :class="linkClass"
+                    active-class="!bg-blue-500/20 !text-blue-800 dark:!text-blue-200 font-semibold"
+                    to="/profile/tracking"
+                    @click="mobileNavOpen = false"
+                  >
+                    <i class="pi pi-truck"></i> 
+                    Rastrear Pedido
+                  </RouterLink>
+                  <RouterLink
+                    :class="linkClass"
+                    active-class="!bg-blue-500/20 !text-blue-800 dark:!text-blue-200 font-semibold"
+                    to="/checkout"
+                    @click="mobileNavOpen = false"
+                  >
+                    <i class="pi pi-check"></i> 
+                    Finalizar Pedido
                   </RouterLink>
                   <RouterLink
                     v-if="!isLoggedIn"
@@ -769,6 +914,7 @@ export default defineComponent({
                     to="/login"
                     @click="mobileNavOpen = false"
                   >
+                    <i class="pi pi-sign-in"></i> 
                     Entrar
                   </RouterLink>
                   <RouterLink
@@ -778,16 +924,8 @@ export default defineComponent({
                     to="/register"
                     @click="mobileNavOpen = false"
                   >
+                    <i class="pi pi-user-plus"></i> 
                     Cadastro
-                  </RouterLink>
-                  <RouterLink
-                    v-if="isLoggedIn"
-                    :class="linkClass"
-                    active-class="!bg-blue-500/20 !text-blue-800 dark:!text-blue-200 font-semibold"
-                    to="/profile/edit"
-                    @click="mobileNavOpen = false"
-                  >
-                    Minha conta
                   </RouterLink>
                   <RouterLink
                     v-if="isAdminUser"
@@ -795,32 +933,33 @@ export default defineComponent({
                     to="/admin"
                     @click="mobileNavOpen = false"
                   >
-                    Admin
+                    <i class="pi pi-cog"></i> 
+                    Painel Admin
                   </RouterLink>
                 </nav>
               </Dialog>
             </template>
 
-            <!-- itens à direita -->
             <template #end>
               <div class="relative md:hidden w-full max-w-sm">
                 <InputText
                   ref="searchInput"
                   v-model="search"
                   placeholder="Buscar produtos..."
-                  class="w-full pr-20 pl-3 h-10"
+                  class="w-full pr-20 pl-3 h-10 transition-colors! bg-gray-200! dark:bg-gray-900! text-gray-900! dark:text-gray-100! border-gray-300! dark:border-gray-700! focus:ring-2 focus:ring-primary/50 focus:outline-none! rounded-md!"
                   @keyup.enter="handleSearch"
                 />
-
+                
                 <Button
                   icon="pi pi-search"
-                  class="!absolute right-1 top-1/2 -translate-y-1/2 !h-8 !w-8 !p-0 flex items-center justify-center"
+                  text
+                  class="!absolute right-1 top-1/2 -translate-y-1/2 !h-8 !w-8 !p-0 flex items-center justify-center text-gray-600! dark:text-green-400!"
                   @click="handleSearch"
                 />
 
                 <i
                   v-if="search"
-                  class="pi pi-times absolute right-10 top-1/2 -translate-y-1/2 text-sm cursor-pointer flex items-center justify-center w-6 h-6"
+                  class="pi pi-times absolute right-10 top-1/2 -translate-y-1/2 text-[.75rem]! text-gray-600! dark:text-green-400! cursor-pointer flex items-center justify-center w-3 h-3"
                   @click="search = ''"
                 />
               </div>
@@ -831,7 +970,7 @@ export default defineComponent({
       </div>
     </header>
 
-    <main class="max-w-[1320px] mx-auto px-3 sm:px-6 pb-10 pt-6">
+    <main class="max-w-[1320px] mx-auto px-3 sm:px-6 pb-10 pt-4 md:pt-6">
       <router-view />
     </main>
 
@@ -841,7 +980,7 @@ export default defineComponent({
       <div class="container relative max-w-[1320px] mx-auto px-3 sm:px-6 pb-0">
         <div class="grid grid-cols-12">
           <div class="col-span-12">
-            <div class="py-15 px-0">
+            <div class="py-5 md:py-15 px-0">
               <div class="grid md:grid-cols-12 grid-cols-1 gap-6">
                 <div class="lg:col-span-3 md:col-span-12">
                   <div class="min-w-0">
@@ -875,7 +1014,6 @@ export default defineComponent({
                     Eleve seu estilo com nossos produtos. Compre com confiança e
                     destaque seu visual único em cada detalhe.
                   </p>
-
                   <ul class="flex gap-2 mt-6">
                     <li>
                       <a
@@ -950,19 +1088,13 @@ export default defineComponent({
                         >
                         </i>
                     </a>
-                      
-                    </li>
-                    
-                  </ul>
-                  <!--end icon-->
+                  </li>
+                </ul>
                 </div>
-                <!--end col-->
-
                 <div class="lg:col-span-6 md:col-span-12">
                   <h5 class="tracking-[1px] text-gray-100 font-semibold">
                     Categorias populares
                   </h5>
-
                   <div class="grid md:grid-cols-12 grid-cols-1">
                     <div class="md:col-span-4">
                       <ul class="list-none footer-list mt-6">
@@ -977,7 +1109,6 @@ export default defineComponent({
                         </li>
                       </ul>
                     </div>
-
                     <div class="md:col-span-4">
                       <ul class="list-none footer-list mt-6">
                         <li
@@ -995,7 +1126,6 @@ export default defineComponent({
                         </li>
                       </ul>
                     </div>
-
                     <div class="md:col-span-4">
                       <ul class="list-none footer-list mt-6">
                         <li class="mt-2.5">
@@ -1054,7 +1184,6 @@ export default defineComponent({
                         </li>
                       </ul>
                     </div>
-                    <!--end col-->
                   </div>
                 </div>
 
@@ -1112,7 +1241,6 @@ export default defineComponent({
         </div>
       </div>
       
-
       <div class="py-7.5 px-0 border-t border-slate-800 dark:border-slate-700">
         <div class="max-w-[1320px] mx-auto px-3 sm:px-6 pb-0">
           <div class="relative text-center">
@@ -1125,7 +1253,7 @@ export default defineComponent({
               </div>
 
               <div class="flex items-center justify-center md:justify-center xl:justify-end">
-                <span class="mr-4">Aceitamos:</span>
+                <span class="mt-6 md:mt-0 mr-4">Aceitamos:</span>
               <ul class="flex list-none md:text-end text-center mt-6 md:mt-0 gap-2 justify-center md:justify-end">
                 <li class="inline">
                   <a href="#"
@@ -1175,9 +1303,7 @@ export default defineComponent({
               </ul>
               </div>
             </div>
-            <!--end grid-->
           </div>
-          <!--end container-->
         </div>
       </div>
     </footer>

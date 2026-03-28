@@ -26,6 +26,15 @@ export default defineComponent({
     user() {
       return authService.getCurrentUser();
     },
+    firstName() {
+      this.authTick;
+      if (!this.user || !this.user.name) return '';
+      return this.user.name.trim().split(' ').slice(0, 2).join(' ');
+    },
+    userRoleLabel() {
+      this.authTick;
+      return authService.isAdmin() ? 'Admin' : 'Cliente';
+    },
   },
 
   mounted() {
@@ -87,14 +96,16 @@ export default defineComponent({
 
       <aside
         class="hidden lg:flex lg:flex-col lg:w-64 shrink-0 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-4 shadow-sm"
-      >
-        <div class="flex items-center justify-between gap-2 mb-4">
-          <RouterLink
-            to="/admin"
-            class="font-bold text-lg no-underline text-gray-900 dark:text-gray-100"
-          >
-            Painel Admin
-          </RouterLink>
+      ><div 
+            v-if="user"
+            class="relative overflow-hidden w-full border-0 bg-transparent flex items-center justify-between gap-2 mb-4">
+             <div class="flex items-center justify-between gap-2">       
+                    <Avatar image="https://primefaces.org/cdn/primevue/images/organization/walter.jpg" class="mr-2" shape="circle" />
+                    <span class="inline-flex flex-col items-start text-gray-800! dark:text-gray-200!">
+                        <span class="text-sm font-bold">{{ firstName }}</span>
+                        <span class="text-sm">{{ userRoleLabel }}</span>
+                    </span>
+                  </div>
           <Button
             :icon="darkMode ? 'pi pi-moon' : 'pi pi-sun'"
             text
@@ -103,6 +114,14 @@ export default defineComponent({
             :aria-label="darkMode ? 'Modo claro' : 'Modo escuro'"
             @click="toggleDarkMode"
           />
+                  </div>
+        <div class="flex items-center justify-between gap-2 mb-4">
+          <RouterLink
+            to="/admin"
+            class="font-bold text-lg no-underline text-gray-900 dark:text-gray-100"
+          >
+            Painel Admin
+          </RouterLink>
         </div>
         <nav class="flex flex-col gap-1 text-sm" aria-label="Administração">
           <RouterLink
