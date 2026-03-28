@@ -466,7 +466,7 @@ export default defineComponent({
             <div 
                 class="flex justify-end items-center gap-3 cursor-pointer" 
                 @click="toggle">
-              <div class="text-white font-normal">Olá, {{ firstName }}</div>
+              <div class="text-white font-normal">{{ greeting }}</div>
               <Avatar :image="avatarUrl" class="mr-2" shape="circle" />
             </div>
           </div>
