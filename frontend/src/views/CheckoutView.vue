@@ -105,7 +105,7 @@ export default defineComponent({
 
     setTimeout(() => {
       this.$router.replace({ name: "cart" });
-    }, 2000);
+    }, 4000);
 
     return;
   }
